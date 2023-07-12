@@ -47,7 +47,6 @@ async def get_playlist(name):
         playlists = None
 
     data = spotify.playlist(id)
-    test = []
     for i, item in enumerate(data["tracks"]["items"]):
         songs["songs"].append(item["track"]["name"])
     print(json.dumps(songs, indent=4, sort_keys=True))

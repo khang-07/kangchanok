@@ -1,11 +1,11 @@
 import sys
 import music
+import asyncio
+import nacl
 sys.path.insert(0, "discord.py-self")
-sys.path.insert(0, "discord.py-self_embed")
 
 import discord
 from discord.ext import commands
-# import discord_self_embed
 import json
 
 with open("config.json", "r") as file:
@@ -16,25 +16,10 @@ prefix = config["prefix"]
 
 bot = commands.Bot(command_prefix=prefix, self_bot=True)
 
-#@bot.command()
-#async def embed(ctx):
-#   embed = discord_self_embed.Embed("Test Title", 
-#      description="Very cool Description!", 
-#    )
-#    embed.set_author(f"{ctx.author}")
-
-#    url = embed.generate_url(hide_url=True)
-#    await ctx.send(url)
-
 # takes array of str
 def format(message):
     separated = "\n".join(map(str, message))
     return f"```{separated}```"
-
-@bot.command()
-async def msg(ctx, user: discord.Member, *, message):
-    await user.send(message)
-    print(f"Message Sent: {message} to {user.name} ({user.id})")
 
 @bot.command()
 async def ping(ctx):
@@ -48,6 +33,7 @@ async def liked(ctx, index=-1):
     await music.get_liked()
     with open("data.json", "r") as file:
         data = json.load(file)
+    await asyncio.sleep(5)
     if (index != -1):
         i = int(index)
         await ctx.send("```" + data["liked"][i]["track"] + " : " + data["liked"][i]["artist"] + "```")
@@ -58,6 +44,7 @@ async def liked(ctx, index=-1):
 
 @bot.command()
 async def playlist(ctx, *msgs):
+    await asyncio.sleep(5)
     name = " ".join(map(str, msgs))
     if (name):
         await music.get_playlist(name)
@@ -72,10 +59,28 @@ async def playlist(ctx, *msgs):
 
 @bot.command()
 async def idk(ctx, *msgs):
+    async with ctx.typing():
+        await asyncio.sleep(5)
     await ctx.send(type(msgs))
     await ctx.send(" ".join(map(str, msgs)))
 
+@bot.command()
+async def join(ctx, *msgs):
+    channel = " ".join(map(str, msgs))
+    print("starting")
+    await asyncio.sleep(5)
+    for i, vc in enumerate(ctx.guild.voice_channels):
+        if (vc.name == channel):
+            await vc.connect()
+    print("end")
+
+@bot.command()
+async def leave(ctx):
+    print("starting")
+    await asyncio.sleep(5)
+    await ctx.guild.voice_client.disconnect()
+    print("end")
 
 bot.run(token)
 
-# end = ctrl+C terminal
+# end = ctrl+C terminal 
