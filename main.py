@@ -15,11 +15,10 @@ token = config["token"]
 prefix = config["prefix"]
 
 bot = commands.Bot(command_prefix=prefix, self_bot=True)
-
+"""
 # takes array of str
 def format(message):
-    separated = "\n".join(map(str, message))
-    return f"```{separated}```"
+    return "\n".join(map(str, message))
 
 @bot.command()
 async def ping(ctx):
@@ -44,6 +43,7 @@ async def liked(ctx, index=-1):
 
 @bot.command()
 async def playlist(ctx, *msgs):
+    print("starting")
     await asyncio.sleep(5)
     name = " ".join(map(str, msgs))
     if (name):
@@ -80,6 +80,18 @@ async def leave(ctx):
     await asyncio.sleep(5)
     await ctx.guild.voice_client.disconnect()
     print("end")
+"""
+
+@bot.event
+async def on_message(ctx):
+    message = ctx.content.split(" ")
+    if (ctx.author.id == 1128221831963361370 or ctx.author.id == 708191305322332210 or ctx.author.id == 532405312997687298):
+        if ("play" in message):
+            print("starting...")
+            index = message.index("play") + 1
+            await music.search(message[index:])
+            print("finished!")
+        
 
 bot.run(token)
 
